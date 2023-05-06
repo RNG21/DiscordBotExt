@@ -106,6 +106,7 @@ class MobileExportParser():
                 os.path.join(self.manifests_dir, filename)
             ) for filename in dict_
         ):
+            logger.debug('[init] local manifests found, loading into RAM')
             for filename, attr_name in dict_.items():
                 with open(os.path.join(self.manifests_dir, filename)) as file:
                     setattr(self, attr_name, json.load(file))
