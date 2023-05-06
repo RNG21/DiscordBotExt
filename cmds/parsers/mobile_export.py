@@ -107,7 +107,7 @@ class MobileExportParser():
             ) for filename in dict_
         ):
             for filename, attr_name in dict_.items():
-                with open(filename) as file:
+                with open(os.path.join(self.manifests_dir, filename)) as file:
                     setattr(self, attr_name, json.load(file))
         else:
             logger.debug('[init] local manifests not found, start to update manifests')
