@@ -89,29 +89,26 @@ class MobileExportParser():
     def __init__(self):
         self.index_url = "https://origin.warframe.com/PublicExport/index_{language_code}.txt.lzma"
         self.manifest_url = "http://content.warframe.com/PublicExport/Manifest/{file_name}"
-        if os.path.exists(
-                os.path.join(self.manifests_dir, 'items.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'nodes.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'nightwave.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'sortie.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'mission.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'fissuremod.json')) and os.path.exists(
-                os.path.join(self.manifests_dir, 'solnodes.json')):
-            logger.debug('[init] local manifests found, loading into RAM')
-            with open(os.path.join(self.manifests_dir, 'items.json'), 'r', encoding='utf-8') as _manifests:
-                self.manifest_data = json.load(_manifests)
-            with open(os.path.join(self.manifests_dir, 'nodes.json'), 'r', encoding='utf-8') as _nodes:
-                self.nodes = json.load(_nodes)
-            with open(os.path.join(self.manifests_dir, 'nightwave.json'), 'r', encoding='utf-8') as _nightwave:
-                self.nightwave = json.load(_nightwave)
-            with open(os.path.join(self.manifests_dir, 'sortie.json'), 'r', encoding='utf-8') as _sortie:
-                self.sortie = json.load(_sortie)
-            with open(os.path.join(self.manifests_dir, 'mission.json'), 'r', encoding='utf-8') as _mission:
-                self.mission = json.load(_mission)
-            with open(os.path.join(self.manifests_dir, 'fissuremod.json'), 'r', encoding='utf-8') as _fissuremod:
-                self.fissuremod = json.load(_fissuremod)
-            with open(os.path.join(self.manifests_dir, 'solnodes.json'), 'r', encoding='utf-8') as _solnodes:
-                self.solnodes = json.load(_solnodes)
+        
+        # filename to load : attribute name
+        dict_ = {
+            "items.json": "manifest_data",
+            "nodes.json": "nodes",
+            "nightwave.json": "nightwave",
+            "sortie.json": "sortie",
+            "mission.json": "mission",
+            "fissuremod.json": "fissuremod",
+            "solnodes.json": "solnodes"
+        }
+        
+        if all(
+            os.path.exists(
+                os.path.join(self.manifests_dir, filename)
+            ) for filename in dict_
+        ):
+            for filename, attr_name in dict_.items():
+                with open(filename) as file:
+                    setattr(self, attr_name, json.load(file))
         else:
             logger.debug('[init] local manifests not found, start to update manifests')
             self.update()
